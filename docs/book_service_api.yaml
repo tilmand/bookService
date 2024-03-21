@@ -1,0 +1,227 @@
+swagger: "2.0"
+info:
+  title: "Book Service API"
+  description: "API for book service"
+  version: "1.0"
+host: "localhost:8080"
+basePath: "/api/v1"
+schemes:
+  - "http"
+paths:
+  /signIn:
+    post:
+      summary: "Sign in"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                default: "example@example.com"
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad request"
+  /signUp:
+    post:
+      summary: "Sign up"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New user data"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                default: "example@example.com"
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad request"
+  /refresh:
+    post:
+      summary: "Refresh token"
+      consumes:
+        - "application/x-www-form-urlencoded"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "formData"
+          name: "refreshToken"
+          description: "Refresh token"
+          required: false
+          type: "string"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad request"
+  /recover:
+    post:
+      summary: "Recover password"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User email"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                default: "example@example.com"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad request"
+  /setNewPassword/{recoveryToken}:
+    post:
+      summary: "Set new password"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "recoveryToken"
+          description: "Recovery token"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "New password data"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad request"
+  /book:
+    post:
+      summary: "Add a new book"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Book object that needs to be added"
+          required: true
+          schema:
+            $ref: "#/definitions/Book"
+        - name: "Authorization"
+          in: "header"
+          description: "Bearer Token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "OK"
+      security:
+        - BearerAuth: []
+  /book/{id}:
+    parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of the book"
+        required: true
+        type: "integer"
+        format: "int64"
+    get:
+      summary: "Find a book by ID"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "OK"
+    put:
+      summary: "Update a book"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Book object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/Book"
+        - name: "Authorization"
+          in: "header"
+          description: "Bearer Token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "OK"
+      security:
+        - BearerAuth: []
+    delete:
+      summary: "Delete a book by ID"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          description: "Bearer Token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "OK"
+      security:
+        - BearerAuth: []
+  /books:
+    get:
+      summary: "Get all books"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "OK"
+securityDefinitions:
+  BearerAuth:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+    description: "Bearer Token"
+definitions:
+  Book:
+    type: "object"
+    properties:
+      Name:
+        type: "string"

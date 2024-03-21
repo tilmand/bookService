@@ -1,0 +1,5 @@
+# docker start:
+sudo docker-compose up --build
+# swagger API with endpoints:
+# bookService/docs/book_service_api.yaml
+
